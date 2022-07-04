@@ -17,17 +17,6 @@ void Engine::Latihan01::Render()
 
 void Engine::Latihan01::Update()
 {
-	//chrono::steady_clock sc;   // create an object of `steady_clock` class
-	//auto start = sc.now();     // start timer
-	////int count = 0;
-	//// do stuff....
-
-	//auto end = sc.now();       // end timer (starting & ending is done by measuring the time at the moment the process started & ended respectively)
-	//auto time_span = static_cast<chrono::duration<double>>(end - start);   // measure time span between start & end
-	////cout << "Operation took: " << time_span.count() << " seconds !!!";
-	////count += time_span.count();
-	//using namespace std::this_thread; // sleep_for, sleep_until
-	//using namespace std::chrono; // nanoseconds, system_clock, seconds
 	if (color_duration >= 100) {
 		if (r >= 255)
 			isLimit = true;
@@ -39,24 +28,11 @@ void Engine::Latihan01::Update()
 		else {
 			r += 25;
 	}
-		/*if (g >= 255) {
-			g = 0;
-		}
-		else {
-			g += 100;
-		}
-		if (b >= 255) {
-			b = 0;
-		}
-		else {
-			b += 5;
-		}*/
+		
 		SetBackgroundColor(r, g, b);
 		color_duration = 0;
 		}
-
 	color_duration += GetGameTime();
-		//SetBackgroundColor(240, 90, 240);
 	}
 
 	

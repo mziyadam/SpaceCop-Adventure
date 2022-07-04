@@ -19,7 +19,13 @@ namespace Engine {
 		virtual void Render();
 	private:
 		Engine::Texture *texture=NULL;
-		Engine::Sprite *sprite=NULL;
+		/*Engine::Sprite *sprite=NULL;*/
+		map<int, Sprite*> mSprites;
+		int cnt = 0;
+		
+		bool isXFlipped = false;
+		float countTime = 0.0f;
+		float counter = 0.0f;
 	};
 }
 #endif

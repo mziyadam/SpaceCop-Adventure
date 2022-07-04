@@ -26,7 +26,7 @@ Demo::~Demo()
 
 void Demo::Init()
 {
-	spriteTexture = new Texture("sprite.png");
+	spriteTexture = new Texture("crate.png");
 	spriteSprite = new Sprite(spriteTexture, defaultSpriteShader, defaultQuad);
 	spriteSprite->SetPosition((setting->screenWidth * 0.5f) - (spriteSprite->GetScaleWidth() * 0.5f),
 		(setting->screenHeight * 0.5f) - (spriteSprite->GetScaleHeight() * 0.5f));
@@ -213,6 +213,7 @@ void Demo::Render()
 //	setting->windowTitle = "Project Example";
 //	setting->screenWidth = 1024;
 //	setting->screenHeight = 768;
+//	setting->targetFrameRate = 60;
 //	setting->windowFlag = WindowFlag::WINDOWED;
 //	Game* game = new Demo(setting);
 //	game->Run();

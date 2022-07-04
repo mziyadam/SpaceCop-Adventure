@@ -10,89 +10,86 @@ Main::Main(Setting* setting) :Game(setting)
 
 Main::~Main()
 {
-	delete spriteTexture;
-	delete monsterTexture;
-	delete dotTexture;
-	delete spriteSprite;
-	delete spriteSprite2;
-	delete monsterSprite;
-	delete dotSprite1;
-	delete dotSprite2;
-	delete dotSprite3;
-	delete dotSprite4;
+	delete spaceCopTexture;
+	delete spaceCopSprite;
+	delete backgroundTexture;
+	delete backgroundSprite;
 	delete music;
-	delete text;
+	delete scoreText;
 }
 
 void Main::Init()
 {
-	spriteTexture = new Texture("sprite.png");
-	spriteSprite = new Sprite(spriteTexture, defaultSpriteShader, defaultQuad);
-	spriteSprite->SetPosition((setting->screenWidth * 0.5f) - (spriteSprite->GetScaleWidth() * 0.5f),
-		(setting->screenHeight * 0.5f) - (spriteSprite->GetScaleHeight() * 0.5f));
-	spriteSprite->SetRotation(0);
-	spriteSprite->SetScale(1.2f);
-	spriteSprite->SetFlipVertical(true);
+	//INIT BACKGROUND
+	backgroundTexture = new Texture("space_background.png");
+	backgroundSprite = new Sprite(backgroundTexture, defaultSpriteShader, defaultQuad);
+	backgroundSprite->SetPosition((0),
+		(0));
 
-	spriteSprite2 = new Sprite(spriteTexture, defaultSpriteShader, defaultQuad);
-	spriteSprite2->SetPosition((setting->screenWidth * 0.5f) - (spriteSprite2->GetScaleWidth() * 0.5f), 0);
-	spriteSprite2->SetRotation(0);
+	//INIT SPACECOP
+	spaceCopTexture = new Texture("space_cop.png");
+	spaceCopSprite = new Sprite(spaceCopTexture, defaultSpriteShader, defaultQuad);
+	spaceCopSprite->SetPosition((setting->screenWidth * 0.5f) - (spaceCopSprite->GetScaleWidth() * 0.5f),
+		(setting->screenHeight * 0.5f) - (spaceCopSprite->GetScaleHeight() * 0.5f));
+	spaceCopSprite->SetRotation(0);
+	spaceCopSprite->SetScale(1.2f);
 
-	// a monster spritesheet has 6 cols and 2 rows (total frames = 6x2 = 12 frames)
-	monsterTexture = new Texture("monster.png");
-	monsterSprite = new Sprite(monsterTexture, defaultSpriteShader, defaultQuad);
-	// Set monster sprite position 
-	// 0,0 is at bottom left of the screen and width, height is at top right
-	monsterSprite->SetPosition(800, 0);
-	// set num cols in spritesheet
-	monsterSprite->SetNumXFrames(6);
-	// set num rows in spritesheet
-	monsterSprite->SetNumYFrames(2);
-	// Set animation speed more duration the speed will become slower
-	monsterSprite->SetAnimationDuration(150);
-	monsterSprite->SetScale(4.0f);
-	// Add Animation name, start frame index, end frame index
-	monsterSprite->AddAnimation("idle", 0, 3);
-	monsterSprite->AddAnimation("walk", 6, 11);
-	// If frame size / sprite size is contain blank space or padding then you must resize the bounding box
-	// or collision shape to improve collision detection accuracy
-	monsterSprite->SetBoundingBoxSize(monsterSprite->GetScaleWidth() - (16 * monsterSprite->GetScale()),
-		monsterSprite->GetScaleHeight() - (4 * monsterSprite->GetScale()));
+	//INIT PLANET
+	planetTexture = new Texture("planet.png");
+	for (int i = 0; i < 15; i++) {
+		planetSprite[i] = new Sprite(planetTexture, defaultSpriteShader, defaultQuad);
+		planetSprite[i]->SetPosition((rand() % setting->screenWidth), setting->screenHeight);
 
-	// This dot sprite is for visual debugging (to see the actual bounding box) 
-	dotTexture = new Texture("dot.png");
-	dotSprite1 = new Sprite(dotTexture, defaultSpriteShader, defaultQuad);
-	dotSprite2 = new Sprite(dotTexture, defaultSpriteShader, defaultQuad);
-	dotSprite3 = new Sprite(dotTexture, defaultSpriteShader, defaultQuad);
-	dotSprite4 = new Sprite(dotTexture, defaultSpriteShader, defaultQuad);
+		//INIT METEOR
+		meteorTexture = new Texture("meteor.png");
+		meteorSprite[i] = new Sprite(meteorTexture, defaultSpriteShader, defaultQuad);
+		meteorSprite[i]->SetPosition((rand() % setting->screenWidth), setting->screenHeight);
+	}
 
-	// Add input mapping 
-	/*inputManager->AddInputMapping("Rotate Right", SDLK_e);
-	inputManager->AddInputMapping("Rotate Left", SDLK_q);*/
+	//INPUT MAPPING
 	inputManager->AddInputMapping("Move Up", SDLK_w);
+	inputManager->AddInputMapping("Play Pause", SDLK_SPACE);
 	inputManager->AddInputMapping("Move Down", SDLK_s);
 	inputManager->AddInputMapping("Move Right", SDLK_d);
 	inputManager->AddInputMapping("Move Left", SDLK_a);
-	inputManager->AddInputMapping("Walk Right", SDLK_RIGHT);
-	inputManager->AddInputMapping("Walk Left", SDLK_LEFT);
 	inputManager->AddInputMapping("Quit", SDLK_ESCAPE);
 
-	// Playing music
-	music = new Music("bensound-funkyelement.ogg");
+	//PLAY MUSIC
+	music = new Music("undertale_49.ogg");
 	music->SetVolume(30);
-	music->Play(true);
+	//music->Play(true);
 
-	sound = new Sound("stepwood_1.wav");
+	//CRASH SOUND
+	sound = new Sound("crash.wav");
 	sound->SetVolume(80);
 
-	text = new Text("lucon.ttf", 14, defaultTextShader);
-	text->SetScale(1.0f);
-	text->SetColor(255, 255, 255);
-	text->SetPosition(0, setting->screenHeight - (text->GetFontSize() * text->GetScale()));
+	//SCORE TEXT
+	scoreText = new Text("imprint.ttf", 24, defaultTextShader);
+	scoreText->SetScale(1.0f);
+	scoreText->SetColor(236, 227, 23);
+	scoreText->SetPosition(setting->screenWidth - (scoreText->GetFontSize() * scoreText->GetScale() * 5) - 25, setting->screenHeight - (scoreText->GetFontSize() * scoreText->GetScale()) - 25);
+	//scoreText->SetScale(0.0f);
 
-	//Set the background color
-	SetBackgroundColor(23, 23, 23);
+	//TITLE TEXT
+	titleText = new Text("imprint.ttf", 36, defaultTextShader);
+	titleText->SetScale(1.0f);
+	titleText->SetColor(236, 227, 23);
+	titleText->SetPosition(setting->screenWidth / 2 - (titleText->GetFontSize() * titleText->GetScale() * 5), setting->screenHeight - (titleText->GetFontSize() * titleText->GetScale()) - 100);
+	//scoreText->SetScale(0.0f);
 
+	//START TEXT
+	startText = new Text("imprint.ttf", 32, defaultTextShader);
+	startText->SetScale(1.0f);
+	startText->SetColor(236, 227, 23);
+	startText->SetPosition(setting->screenWidth / 2 - (startText->GetFontSize() * startText->GetScale() * 5), 100);
+	//scoreText->SetScale(0.0f);
+
+	//QUIT TEXT
+	quitText = new Text("imprint.ttf", 24, defaultTextShader);
+	quitText->SetScale(1.0f);
+	quitText->SetColor(236, 227, 23);
+	quitText->SetPosition(setting->screenWidth - (quitText->GetFontSize() * quitText->GetScale() * 5) - 25, 25);
+	//scoreText->SetScale(0.0f);
 }
 
 void Main::Update()
@@ -102,122 +99,158 @@ void Main::Update()
 		state = State::EXIT;
 		return;
 	}
-
-	float speed = 0.0f;
-	//if (inputManager->IsKeyPressed("Rotate Right")) {
-	//	speed = -0.1f;
-	//}
-
-	//if (inputManager->IsKeyPressed("Rotate Left")) {
-	//	speed = 0.1f;
-	//}
-
-	float degree = speed * GetGameTime();
-
-	spriteSprite->SetRotation(spriteSprite->GetRotation() + degree);
-
-	float xspeed = 0, yspeed = 0;
-
-	if (inputManager->IsKeyPressed("Move Up")) {
-		yspeed = 0.08f;
-		spriteSprite->SetPosition(spriteSprite->GetPosition().x + xspeed * GetGameTime(),
-			spriteSprite->GetPosition().y + yspeed * GetGameTime());
+	if (!isStarted) {
+		titleText->SetText("Space Cop Adventure");
+		startText->SetText("Press 'Spacebar' to Start");
+		quitText->SetText("Quit (Esc)");
+		if (inputManager->IsKeyReleased("Play Pause")) {
+			isPaused = false;
+			isStarted = true;
+		}
+		if (inputManager->IsKeyReleased("Quit")) {
+			state = State::EXIT;
+			return;
+		}
 	}
+	if (!isPaused) {
+		if (timeCounter >= (10000+spawnLength)) {
+			spawnLength += 5000;
+			timeCounter = 0;
+			if(objectCounter<=50)
+				objectCounter += 1;
+		}
+		timeCounter += GetGameTime();
+		titleText->SetScale(0.0f);
+		startText->SetScale(0.0f);
+		for (int i = 0; i < objectCounter; i++) {
+			//Planet Movement
+			float xPlanet = planetSprite[i]->GetPosition().x;
+			float yPlanet = planetSprite[i]->GetPosition().y;
+			float velocityPlanet = 0.1f;
+			if (score > 0)
+				velocityPlanet = 0.1f + 0.00015f * score;
+			cout << "VELOCITY PLANET :" << velocityPlanet << endl;
+			if (yPlanet <= 0) {
+				planetSprite[i]->SetPosition((rand() % setting->screenWidth), setting->screenHeight);
+			}
+			else {
+				yPlanet -= velocityPlanet * GetGameTime();
+				planetSprite[i]->SetPosition(xPlanet, yPlanet);
+			}
 
-	if (inputManager->IsKeyPressed("Move Down")) {
-		yspeed = -0.08f;
-		spriteSprite->SetPosition(spriteSprite->GetPosition().x + xspeed * GetGameTime(),
-			spriteSprite->GetPosition().y + yspeed * GetGameTime());
+			//Meteor Movement
+			float xMeteor = meteorSprite[i]->GetPosition().x;
+			float yMeteor = meteorSprite[i]->GetPosition().y;
+			float velocityMeteor = 0.1f;
+			if (score > 0)
+				velocityMeteor = 0.1f + 0.0001f * score;
+			cout << "VELOCITY METEOR :" << velocityMeteor << endl;
+			if (yMeteor <= 0) {
+				meteorSprite[i]->SetPosition((rand() % setting->screenWidth), setting->screenHeight);
+			}
+			else {
+				yMeteor -= velocityMeteor * GetGameTime();
+				meteorSprite[i]->SetPosition(xMeteor, yMeteor);
+			}
+			score += (0.055f * GetGameTime());
+		}
+
+		//INPUT HANDLING
+		float x = spaceCopSprite->GetPosition().x;
+		float y = spaceCopSprite->GetPosition().y;
+		float speed = 0.1f;
+		if (score > 0)
+			speed = 0.1f + 0.00015f * score;
+		float width = setting->screenWidth;
+		float height = setting->screenHeight;
+		if (inputManager->IsKeyPressed("Move Up")) {
+			if (y <= (height - spaceCopSprite->GetScaleHeight())) {
+				y += speed * GetGameTime();
+			}
+		}
+
+		if (inputManager->IsKeyPressed("Move Down")) {
+			if (y >= 0) {
+				y -= speed * GetGameTime();
+			}
+		}
+
+		if (inputManager->IsKeyPressed("Move Right")) {
+			if (x <= (width - spaceCopSprite->GetScaleWidth())) {
+				x += speed * GetGameTime();
+			}
+		}
+
+		if (inputManager->IsKeyPressed("Move Left")) {
+			if (x >= 0) {
+				x -= speed * GetGameTime();
+			}
+		}
+		spaceCopSprite->SetPosition(x, y);
+
+		scoreText->SetText("Score: " + (score >= 0 ?
+			to_string(score) : "0"));
+
+		BoundingBox* bb = spaceCopSprite->GetBoundingBox();
+		for (int i = 0; i < objectCounter; i++) {
+			if (meteorSprite[i]->GetBoundingBox()->CollideWith(bb) || planetSprite[i]->GetBoundingBox()->CollideWith(bb)) {
+				isPaused = true;
+				if (!sound->IsPlaying())
+					sound->Play(false);
+			}
+		}
 	}
-
-	if (inputManager->IsKeyPressed("Move Right")) {
-		xspeed = 0.08f;
-		spriteSprite->SetPosition(spriteSprite->GetPosition().x + xspeed * GetGameTime(),
-			spriteSprite->GetPosition().y + yspeed * GetGameTime());
+	else {
+		titleText->SetScale(1.0f);
+		startText->SetScale(1.0f);
+		objectCounter = 1;
+		if (isStarted) {
+			titleText->SetPosition(setting->screenWidth / 2 - (titleText->GetFontSize() * titleText->GetScale() * 2), setting->screenHeight - (titleText->GetFontSize() * titleText->GetScale()) - 100);
+			titleText->SetText("Game Over");
+			startText->SetText("Press 'Spacebar' to Retry");
+		}
+		if (inputManager->IsKeyReleased("Play Pause")) {
+			score = 0;
+			isPaused = false;
+			start();
+		}
 	}
-
-	if (inputManager->IsKeyPressed("Move Left")) {
-		xspeed = -0.08f;
-		spriteSprite->SetPosition(spriteSprite->GetPosition().x + xspeed * GetGameTime(),
-			spriteSprite->GetPosition().y + yspeed * GetGameTime());
-	}
-
-	bool isCollided = spriteSprite2->GetBoundingBox()->CollideWith(spriteSprite->GetBoundingBox());
-	text->SetText((isCollided ? "[Collision = Yes]" : "[Collision = No]") +
-		("[FPS = " + to_string(currentFrameRate)) +
-		"] Press W-A-S-D-Q-E to Move");
-
-	monsterSprite->PlayAnim("idle");
-
-	// Move monster sprite using keyboard
-	vec2 oldMonsterPos = monsterSprite->GetPosition();
-	if (inputManager->IsKeyPressed("Walk Right")) {
-		xspeed = 0.04f;
-		monsterSprite->PlayAnim("walk");
-		monsterSprite->SetPosition(oldMonsterPos.x + xspeed * GetGameTime(),
-			oldMonsterPos.y);
-		monsterSprite->SetFlipHorizontal(false);
-		if (!sound->IsPlaying())
-			sound->Play(false);
-	}
-
-	if (inputManager->IsKeyPressed("Walk Left")) {
-		xspeed = -0.04f;
-		monsterSprite->PlayAnim("walk");
-		monsterSprite->SetPosition(oldMonsterPos.x + xspeed * GetGameTime(),
-			oldMonsterPos.y);
-		monsterSprite->SetFlipHorizontal(true);
-		if (!sound->IsPlaying())
-			sound->Play(false);
-	}
-
-	// Update monster sprite animation
-	monsterSprite->Update(GetGameTime());
-
-	BoundingBox* bb = monsterSprite->GetBoundingBox();
-	if (spriteSprite2->GetBoundingBox()->CollideWith(bb)) {
-		//revert position if collided
-		monsterSprite->SetPosition(oldMonsterPos.x,
-			oldMonsterPos.y);
-	}
-
-	//Render shape for debug
-	dotSprite1->SetPosition(bb->GetVertices()[0].x - (0.5f * dotSprite1->GetScaleWidth()),
-		bb->GetVertices()[0].y - (0.5f * dotSprite1->GetScaleHeight()));
-	dotSprite2->SetPosition(bb->GetVertices()[1].x - (0.5f * dotSprite2->GetScaleWidth()),
-		bb->GetVertices()[1].y - (0.5f * dotSprite2->GetScaleHeight()));
-	dotSprite3->SetPosition(bb->GetVertices()[2].x - (0.5f * dotSprite3->GetScaleWidth()),
-		bb->GetVertices()[2].y - (0.5f * dotSprite3->GetScaleHeight()));
-	dotSprite4->SetPosition(bb->GetVertices()[3].x - (0.5f * dotSprite4->GetScaleWidth()),
-		bb->GetVertices()[3].y - (0.5f * dotSprite3->GetScaleHeight()));
-
-
-
 }
 
 void Main::Render()
 {
-	spriteSprite2->Draw();
-	spriteSprite->Draw();
-	monsterSprite->Draw();
-	dotSprite1->Draw();
-	dotSprite2->Draw();
-	dotSprite3->Draw();
-	dotSprite4->Draw();
-	text->Draw();
+	backgroundSprite->Draw();
+	spaceCopSprite->Draw();
+	for (int i = 0; i < 15; i++) {
+		meteorSprite[i]->Draw();
+		planetSprite[i]->Draw();
+	}
+	scoreText->Draw();
+	titleText->Draw();
+	startText->Draw();
+	quitText->Draw();
 }
 
+void Main::start() {
+	spaceCopSprite->SetPosition((setting->screenWidth * 0.5f) - (spaceCopSprite->GetScaleWidth() * 0.5f),
+		(setting->screenHeight * 0.5f) - (spaceCopSprite->GetScaleHeight() * 0.5f));
+	for (int i = 0; i < 15; i++) {
+		planetSprite[i]->SetPosition((rand() % setting->screenWidth), setting->screenHeight);
+		meteorSprite[i]->SetPosition((rand() % setting->screenWidth), setting->screenHeight);
+	}
+}
 
-//int main(int argc, char** argv) {
-//	Setting* setting = new Setting();
-//	setting->windowTitle = "Project Example";
-//	setting->screenWidth = 1024;
-//	setting->screenHeight = 768;
-//	setting->windowFlag = WindowFlag::WINDOWED;
-//	Game* game = new Main(setting);
-//	game->Run();
-//	delete setting;
-//	delete game;
-//
-//	return 0;
-//}
+int main(int argc, char** argv) {
+	Setting* setting = new Setting();
+	setting->windowTitle = "Project Example";
+	setting->screenWidth = 1024;
+	setting->screenHeight = 768;
+	setting->windowFlag = WindowFlag::WINDOWED;
+	setting->targetFrameRate = 60;
+	Game* game = new Main(setting);
+	game->Run();
+	delete setting;
+	delete game;
+
+	return 0;
+}

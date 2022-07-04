@@ -20,20 +20,29 @@ namespace Engine {
 		virtual void Update();
 		virtual void Render();
 	private:
-		Texture* spriteTexture = NULL;
-		Texture* monsterTexture = NULL;
-		Texture* dotTexture = NULL;
-		Sprite* spriteSprite = NULL;
-		Sprite* spriteSprite2 = NULL;
-		Sprite* monsterSprite = NULL;
-		Sprite* dotSprite1 = NULL;
-		Sprite* dotSprite2 = NULL;
-		Sprite* dotSprite3 = NULL;
-		Sprite* dotSprite4 = NULL;
-		Music* music = NULL;;
-		Sound* sound = NULL;
-		Text* text = NULL;
+		Texture* spaceCopTexture = NULL;
+		Texture* planetTexture = NULL;
+		Texture* meteorTexture = NULL;
+		Texture* backgroundTexture = NULL;
 
+		Sprite* spaceCopSprite = NULL;
+		Sprite* meteorSprite[15];
+		Sprite* planetSprite[15];
+		Sprite* backgroundSprite = NULL;
+
+		Music* music = NULL;
+		Sound* sound = NULL;
+		Text* scoreText = NULL;
+		Text* titleText = NULL;
+		Text* startText = NULL;
+		Text* quitText = NULL;
+		float timeCounter = 0.0f;
+		float spawnLength = 0.0f;
+		int objectCounter = 1;
+		int score = -120;
+		bool isPaused = true;
+		bool isStarted = false;
+		void start();
 	};
 }
 #endif
