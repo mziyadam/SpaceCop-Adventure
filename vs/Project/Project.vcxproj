@@ -143,6 +143,7 @@
     <None Include="text.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Background.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Demo.h" />
     <ClInclude Include="Input.h" />
@@ -163,6 +164,7 @@
     <ClInclude Include="Texture.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Background.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Demo.cpp" />
     <ClCompile Include="Input.cpp" />
