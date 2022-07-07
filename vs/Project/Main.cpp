@@ -100,29 +100,25 @@ void Main::Init()
 	titleText->SetScale(1.0f);
 	titleText->SetColor(236, 227, 23);
 	titleText->SetPosition(setting->screenWidth / 2 - (titleText->GetFontSize() * titleText->GetScale() * 5), setting->screenHeight - (titleText->GetFontSize() * titleText->GetScale()) - 100);
-	//scoreText->SetScale(0.0f);
 
 	//START TEXT
 	startText = new Text("imprint.ttf", 32, defaultTextShader);
 	startText->SetScale(1.0f);
 	startText->SetColor(236, 227, 23);
 	startText->SetPosition(setting->screenWidth / 2 - (startText->GetFontSize() * startText->GetScale() * 5), 100);
-	//scoreText->SetScale(0.0f);
 
 	//QUIT TEXT
 	quitText = new Text("imprint.ttf", 24, defaultTextShader);
 	quitText->SetScale(1.0f);
 	quitText->SetColor(236, 227, 23);
 	quitText->SetPosition(setting->screenWidth - (quitText->GetFontSize() * quitText->GetScale() * 5) - 25, 25);
-	//scoreText->SetScale(0.0f);
 }
 
 void Main::Update()
 {
-	
+	//CHECK BEFORE START CONDITION
 	if (!isStarted) {
 		titleText->SetText("Space Cop Adventure");
-		//startText->SetText("Press 'Spacebar' to Start");
 		if (isStartHover) {
 			startHoverSprite->SetScale(0.5f);
 			quitHoverSprite->SetScale(0.0f);
@@ -152,17 +148,14 @@ void Main::Update()
 			}
 
 		}
-		//quitText->SetText("Quit (Esc)");
-		/*if (inputManager->IsKeyReleased("Play Pause")) {
-			isPaused = false;
-			isStarted = true;
-		}
+	}
+	if (!isPaused) {
+		quitText->SetText("Quit (Esc)");
 		if (inputManager->IsKeyReleased("Quit")) {
 			state = State::EXIT;
 			return;
-		}*/
-	}
-	if (!isPaused) {
+		}
+
 		float xBg = backgroundSprite->GetPosition().x;
 		float yBg = backgroundSprite->GetPosition().y;
 		float xBg2 = backgroundSprite2->GetPosition().x;
@@ -262,15 +255,15 @@ void Main::Update()
 			titleText->SetText("Game Over");
 			startText->SetText("Press 'Spacebar' to Retry");
 			quitText->SetText("Quit (Esc)");
-		}
-		if (inputManager->IsKeyReleased("Play Pause")) {
-			score = 0;
-			isPaused = false;
-			start();
-		}
-		if (inputManager->IsKeyReleased("Quit")) {
-			state = State::EXIT;
-			return;
+			if (inputManager->IsKeyReleased("Play Pause")) {
+				score = 0;
+				isPaused = false;
+				start();
+			}
+			if (inputManager->IsKeyReleased("Quit")) {
+				state = State::EXIT;
+				return;
+			}
 		}
 	}
 }
@@ -305,7 +298,7 @@ void Main::start() {
 
 int main(int argc, char** argv) {
 	Setting* setting = new Setting();
-	setting->windowTitle = "Project Example";
+	setting->windowTitle = "Space Cop Adventure";
 	setting->screenWidth = 1024;
 	setting->screenHeight = 768;
 	setting->windowFlag = WindowFlag::WINDOWED;
