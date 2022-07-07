@@ -151,6 +151,7 @@
     <ClInclude Include="Main.h" />
     <ClInclude Include="Meteor.h" />
     <ClInclude Include="Music.h" />
+    <ClInclude Include="Planet.h" />
     <ClInclude Include="Quad.h" />
     <ClInclude Include="BoundingBox.h" />
     <ClInclude Include="SATCollision.h" />
@@ -168,7 +169,9 @@
     <ClCompile Include="Latihan01.cpp" />
     <ClCompile Include="Latihan02.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Meteor.cpp" />
     <ClCompile Include="Music.cpp" />
+    <ClCompile Include="Planet.cpp" />
     <ClCompile Include="Quad.cpp" />
     <ClCompile Include="BoundingBox.cpp" />
     <ClCompile Include="SATCollision.cpp" />

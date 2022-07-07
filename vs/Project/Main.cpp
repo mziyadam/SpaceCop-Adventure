@@ -25,6 +25,31 @@ void Main::Init()
 	backgroundSprite = new Sprite(backgroundTexture, defaultSpriteShader, defaultQuad);
 	backgroundSprite->SetPosition((0),
 		(0));
+	backgroundSprite2 = new Sprite(backgroundTexture, defaultSpriteShader, defaultQuad);
+	backgroundSprite2->SetPosition((0),
+		(0));
+
+	//INIT BUTTON
+	startTexture = new Texture("start.png");
+	startSprite=new Sprite(startTexture, defaultSpriteShader, defaultQuad);
+	startSprite->SetPosition(setting->screenWidth / 2 -100 , 250);
+	startSprite->SetScale(0.5f);
+
+	startHoverTexture = new Texture("start-hover.png");
+	startHoverSprite=new Sprite(startHoverTexture, defaultSpriteShader, defaultQuad);
+	startHoverSprite->SetPosition(setting->screenWidth / 2- 100, 250);
+	startHoverSprite->SetScale(0.0f);
+
+	quitTexture = new Texture("quit.png");
+	quitSprite=new Sprite(quitTexture, defaultSpriteShader, defaultQuad);
+	quitSprite->SetPosition(setting->screenWidth/2 - 100  , 175);
+	quitSprite->SetScale(0.5f);
+
+	quitHoverTexture = new Texture("quit-hover.png");
+	quitHoverSprite=new Sprite(quitHoverTexture, defaultSpriteShader, defaultQuad);
+	quitHoverSprite->SetPosition(setting->screenWidth/2 - 100 , 175);
+	quitHoverSprite->SetScale(0.0f);
+
 
 	//INIT SPACECOP
 	spaceCopTexture = new Texture("space_cop.png");
@@ -34,16 +59,15 @@ void Main::Init()
 	spaceCopSprite->SetRotation(0);
 	spaceCopSprite->SetScale(1.2f);
 
-	//INIT PLANET
+	//INIT TEXTURE PLANET AND METEOR
 	planetTexture = new Texture("planet.png");
+	meteorTexture = new Texture("meteor.png");
 	for (int i = 0; i < 15; i++) {
-		planetSprite[i] = new Sprite(planetTexture, defaultSpriteShader, defaultQuad);
-		planetSprite[i]->SetPosition((rand() % setting->screenWidth), setting->screenHeight);
+		//INIT PLANET
+		planetSprite[i] = new Planet(planetTexture, defaultSpriteShader, defaultQuad,setting);
 
 		//INIT METEOR
-		meteorTexture = new Texture("meteor.png");
-		meteorSprite[i] = new Sprite(meteorTexture, defaultSpriteShader, defaultQuad);
-		meteorSprite[i]->SetPosition((rand() % setting->screenWidth), setting->screenHeight);
+		meteorSprite[i] = new Meteor(meteorTexture, defaultSpriteShader, defaultQuad,setting);
 	}
 
 	//INPUT MAPPING
@@ -51,13 +75,14 @@ void Main::Init()
 	inputManager->AddInputMapping("Play Pause", SDLK_SPACE);
 	inputManager->AddInputMapping("Move Down", SDLK_s);
 	inputManager->AddInputMapping("Move Right", SDLK_d);
+	inputManager->AddInputMapping("Enter", SDLK_RETURN);
 	inputManager->AddInputMapping("Move Left", SDLK_a);
 	inputManager->AddInputMapping("Quit", SDLK_ESCAPE);
 
 	//PLAY MUSIC
 	music = new Music("undertale_49.ogg");
 	music->SetVolume(30);
-	//music->Play(true);
+	music->Play(true);
 
 	//CRASH SOUND
 	sound = new Sound("crash.wav");
@@ -94,25 +119,76 @@ void Main::Init()
 
 void Main::Update()
 {
-	// If user press "Quit" key then exit
-	if (inputManager->IsKeyReleased("Quit")) {
-		state = State::EXIT;
-		return;
-	}
+	
 	if (!isStarted) {
 		titleText->SetText("Space Cop Adventure");
-		startText->SetText("Press 'Spacebar' to Start");
-		quitText->SetText("Quit (Esc)");
-		if (inputManager->IsKeyReleased("Play Pause")) {
+		//startText->SetText("Press 'Spacebar' to Start");
+		if (isStartHover) {
+			startHoverSprite->SetScale(0.5f);
+			quitHoverSprite->SetScale(0.0f);
+		}
+		else {
+			startHoverSprite->SetScale(0.0f);
+			quitHoverSprite->SetScale(0.5f);
+		}
+		if (inputManager->IsKeyReleased("Move Up")) {
+			isStartHover = true;
+		}
+		if (inputManager->IsKeyReleased("Move Down")) {
+			isStartHover = false;
+		}
+		if (inputManager->IsKeyReleased("Enter")) {
+			startHoverSprite->SetScale(0.0f);
+			startSprite->SetScale(0.0f);
+			quitSprite->SetScale(0.0f);
+			quitHoverSprite->SetScale(0.0f);
+			if (isStartHover) {
+				isPaused = false;
+				isStarted = true;
+			}
+			else {
+				state = State::EXIT;
+				return;
+			}
+
+		}
+		//quitText->SetText("Quit (Esc)");
+		/*if (inputManager->IsKeyReleased("Play Pause")) {
 			isPaused = false;
 			isStarted = true;
 		}
 		if (inputManager->IsKeyReleased("Quit")) {
 			state = State::EXIT;
 			return;
-		}
+		}*/
 	}
 	if (!isPaused) {
+		float xBg = backgroundSprite->GetPosition().x;
+		float yBg = backgroundSprite->GetPosition().y;
+		float xBg2 = backgroundSprite2->GetPosition().x;
+		float yBg2 = backgroundSprite2->GetPosition().y;
+		float speedBg = 0.05f;
+		
+		if (backgroundCounter >= 15000) {
+			backgroundSprite->SetPosition(0, 0);
+			backgroundCounter = 0.0f;
+		}
+		else {
+			yBg -= speedBg * GetGameTime();
+			backgroundSprite->SetPosition(xBg, yBg);
+		}
+		backgroundCounter += GetGameTime();
+		if (backgroundCounter2 >= 10000) {
+			yBg2 -= speedBg * GetGameTime();
+			backgroundSprite2->SetPosition(xBg, yBg);
+			if (backgroundCounter2 >= 22000) {
+				backgroundSprite2->SetPosition(0, setting->screenHeight);
+				backgroundCounter2 == 10000;
+			}
+		}
+		backgroundCounter2 += GetGameTime();
+
+
 		if (timeCounter >= (10000+spawnLength)) {
 			spawnLength += 5000;
 			timeCounter = 0;
@@ -123,35 +199,11 @@ void Main::Update()
 		titleText->SetScale(0.0f);
 		startText->SetScale(0.0f);
 		for (int i = 0; i < objectCounter; i++) {
-			//Planet Movement
-			float xPlanet = planetSprite[i]->GetPosition().x;
-			float yPlanet = planetSprite[i]->GetPosition().y;
-			float velocityPlanet = 0.1f;
-			if (score > 0)
-				velocityPlanet = 0.1f + 0.00015f * score;
-			cout << "VELOCITY PLANET :" << velocityPlanet << endl;
-			if (yPlanet <= 0) {
-				planetSprite[i]->SetPosition((rand() % setting->screenWidth), setting->screenHeight);
-			}
-			else {
-				yPlanet -= velocityPlanet * GetGameTime();
-				planetSprite[i]->SetPosition(xPlanet, yPlanet);
-			}
-
-			//Meteor Movement
-			float xMeteor = meteorSprite[i]->GetPosition().x;
-			float yMeteor = meteorSprite[i]->GetPosition().y;
-			float velocityMeteor = 0.1f;
-			if (score > 0)
-				velocityMeteor = 0.1f + 0.0001f * score;
-			cout << "VELOCITY METEOR :" << velocityMeteor << endl;
-			if (yMeteor <= 0) {
-				meteorSprite[i]->SetPosition((rand() % setting->screenWidth), setting->screenHeight);
-			}
-			else {
-				yMeteor -= velocityMeteor * GetGameTime();
-				meteorSprite[i]->SetPosition(xMeteor, yMeteor);
-			}
+			//PLANET MOVEMENT
+			planetSprite[i]->UpdateObject(score,GetGameTime(),setting);
+			//METEOR MOVEMENT
+			meteorSprite[i]->UpdateObject(score, GetGameTime(), setting);
+			//ADD SCORE
 			score += (0.055f * GetGameTime());
 		}
 
@@ -163,6 +215,7 @@ void Main::Update()
 			speed = 0.1f + 0.00015f * score;
 		float width = setting->screenWidth;
 		float height = setting->screenHeight;
+
 		if (inputManager->IsKeyPressed("Move Up")) {
 			if (y <= (height - spaceCopSprite->GetScaleHeight())) {
 				y += speed * GetGameTime();
@@ -208,18 +261,28 @@ void Main::Update()
 			titleText->SetPosition(setting->screenWidth / 2 - (titleText->GetFontSize() * titleText->GetScale() * 2), setting->screenHeight - (titleText->GetFontSize() * titleText->GetScale()) - 100);
 			titleText->SetText("Game Over");
 			startText->SetText("Press 'Spacebar' to Retry");
+			quitText->SetText("Quit (Esc)");
 		}
 		if (inputManager->IsKeyReleased("Play Pause")) {
 			score = 0;
 			isPaused = false;
 			start();
 		}
+		if (inputManager->IsKeyReleased("Quit")) {
+			state = State::EXIT;
+			return;
+		}
 	}
 }
 
 void Main::Render()
 {
+	backgroundSprite2->Draw();
 	backgroundSprite->Draw();
+	startSprite->Draw();
+	startHoverSprite->Draw();
+	quitSprite->Draw();
+	quitHoverSprite->Draw();
 	spaceCopSprite->Draw();
 	for (int i = 0; i < 15; i++) {
 		meteorSprite[i]->Draw();
