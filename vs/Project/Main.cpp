@@ -22,11 +22,8 @@ void Main::Init()
 {
 	//INIT BACKGROUND
 	backgroundTexture = new Texture("space_background.png");
-	backgroundSprite = new Sprite(backgroundTexture, defaultSpriteShader, defaultQuad);
+	backgroundSprite = new Background(backgroundTexture, defaultSpriteShader, defaultQuad,setting);
 	backgroundSprite->SetPosition((0),
-		(0));
-	backgroundSprite2 = new Sprite(backgroundTexture, defaultSpriteShader, defaultQuad);
-	backgroundSprite2->SetPosition((0),
 		(0));
 
 	//INIT BUTTON
@@ -155,31 +152,15 @@ void Main::Update()
 			state = State::EXIT;
 			return;
 		}
-
-		float xBg = backgroundSprite->GetPosition().x;
-		float yBg = backgroundSprite->GetPosition().y;
-		float xBg2 = backgroundSprite2->GetPosition().x;
-		float yBg2 = backgroundSprite2->GetPosition().y;
-		float speedBg = 0.05f;
 		
 		if (backgroundCounter >= 15000) {
-			backgroundSprite->SetPosition(0, 0);
+			backgroundSprite->UpdateObject(GetGameTime(), setting,true);
 			backgroundCounter = 0.0f;
 		}
 		else {
-			yBg -= speedBg * GetGameTime();
-			backgroundSprite->SetPosition(xBg, yBg);
+			backgroundSprite->UpdateObject(GetGameTime(), setting, false);
 		}
 		backgroundCounter += GetGameTime();
-		if (backgroundCounter2 >= 10000) {
-			yBg2 -= speedBg * GetGameTime();
-			backgroundSprite2->SetPosition(xBg, yBg);
-			if (backgroundCounter2 >= 22000) {
-				backgroundSprite2->SetPosition(0, setting->screenHeight);
-				backgroundCounter2 == 10000;
-			}
-		}
-		backgroundCounter2 += GetGameTime();
 
 
 		if (timeCounter >= (10000+spawnLength)) {
@@ -233,7 +214,6 @@ void Main::Update()
 			}
 		}
 		spaceCopSprite->SetPosition(x, y);
-
 		scoreText->SetText("Score: " + (score >= 0 ?
 			to_string(score) : "0"));
 
@@ -270,7 +250,6 @@ void Main::Update()
 
 void Main::Render()
 {
-	backgroundSprite2->Draw();
 	backgroundSprite->Draw();
 	startSprite->Draw();
 	startHoverSprite->Draw();

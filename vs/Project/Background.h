@@ -14,7 +14,8 @@ namespace Engine {
             this->SetPosition(0,0);
         };
         ~Background();
-        void UpdateObject(int score, float gameTime, Setting* setting);
+        void UpdateObject( float gameTime, Setting* setting,bool isReset);        
     };
+
 }
 #endif

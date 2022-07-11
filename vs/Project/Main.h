@@ -6,6 +6,7 @@
 #include "Texture.h"
 #include "Sprite.h"
 #include "Meteor.h"
+#include "Background.h"
 #include "Planet.h"
 #include "Music.h"
 #include "Sound.h"
@@ -34,8 +35,7 @@ namespace Engine {
 		Sprite* spaceCopSprite = NULL;
 		Meteor* meteorSprite[15];
 		Planet* planetSprite[15];
-		Sprite* backgroundSprite = NULL;
-		Sprite* backgroundSprite2 = NULL;
+		Background* backgroundSprite = NULL;
 		Sprite* startSprite = NULL;
 		Sprite* startHoverSprite = NULL;
 		Sprite* quitSprite = NULL;
@@ -49,7 +49,6 @@ namespace Engine {
 		Text* quitText = NULL;
 		float timeCounter = 0.0f;
 		float backgroundCounter = 0.0f;
-		float backgroundCounter2 = 0.0f;
 		float spawnLength = 0.0f;
 		int objectCounter = 1;
 		int score = -120;
