@@ -31,6 +31,7 @@ namespace Engine {
 		Texture* startHoverTexture = NULL;
 		Texture* quitTexture = NULL;
 		Texture* quitHoverTexture = NULL;
+		Texture* titleTexture = NULL;
 
 		Sprite* spaceCopSprite = NULL;
 		Meteor* meteorSprite[15];
@@ -40,6 +41,7 @@ namespace Engine {
 		Sprite* startHoverSprite = NULL;
 		Sprite* quitSprite = NULL;
 		Sprite* quitHoverSprite = NULL;
+		Sprite* titleSprite = NULL;
 
 		Music* music = NULL;
 		Sound* sound = NULL;

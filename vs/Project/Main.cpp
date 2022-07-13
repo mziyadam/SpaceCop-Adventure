@@ -49,8 +49,13 @@ void Main::Init()
 
 
 	//INIT SPACECOP
-	spaceCopTexture = new Texture("space_cop.png");
+	spaceCopTexture = new Texture("spacecop-spritesheet.png");
 	spaceCopSprite = new Sprite(spaceCopTexture, defaultSpriteShader, defaultQuad);
+	spaceCopSprite->SetNumXFrames(60);
+	spaceCopSprite->SetNumYFrames(1);
+	spaceCopSprite->AddAnimation("move", 0, 59);
+	spaceCopSprite->PlayAnim("move");
+	spaceCopSprite->SetAnimationDuration(50);
 	spaceCopSprite->SetPosition((setting->screenWidth * 0.5f) - (spaceCopSprite->GetScaleWidth() * 0.5f),
 		(setting->screenHeight * 0.5f) - (spaceCopSprite->GetScaleHeight() * 0.5f));
 	spaceCopSprite->SetRotation(0);
@@ -78,7 +83,7 @@ void Main::Init()
 
 	//PLAY MUSIC
 	music = new Music("undertale_49.ogg");
-	music->SetVolume(30);
+	music->SetVolume(100);
 	music->Play(true);
 
 	//CRASH SOUND
@@ -97,6 +102,17 @@ void Main::Init()
 	titleText->SetScale(1.0f);
 	titleText->SetColor(236, 227, 23);
 	titleText->SetPosition(setting->screenWidth / 2 - (titleText->GetFontSize() * titleText->GetScale() * 5), setting->screenHeight - (titleText->GetFontSize() * titleText->GetScale()) - 100);
+	
+	titleTexture = new Texture("title-spritesheet.png");
+	titleSprite = new Sprite(titleTexture, defaultSpriteShader, defaultQuad);
+	titleSprite->SetNumXFrames(2);
+	titleSprite->SetNumYFrames(1);
+	titleSprite->AddAnimation("light", 0, 1);
+	titleSprite->PlayAnim("light");
+	titleSprite->SetAnimationDuration(500);
+	titleSprite->SetPosition(setting->screenWidth / 2 - ( titleSprite->GetScaleWidth() * 0.5f), setting->screenHeight - (titleSprite->GetScaleHeight() *0.5f) - 100);
+	titleSprite->SetRotation(0);
+	titleSprite->SetScale(1.0f);
 
 	//START TEXT
 	startText = new Text("imprint.ttf", 32, defaultTextShader);
@@ -115,7 +131,8 @@ void Main::Update()
 {
 	//CHECK BEFORE START CONDITION
 	if (!isStarted) {
-		titleText->SetText("Space Cop Adventure");
+		//titleText->SetText("Space Cop Adventure");
+		titleSprite->Update(GetGameTime());
 		if (isStartHover) {
 			startHoverSprite->SetScale(0.5f);
 			quitHoverSprite->SetScale(0.0f);
@@ -147,9 +164,11 @@ void Main::Update()
 		}
 	}
 	if (!isPaused) {
+		spaceCopSprite->Update(GetGameTime());
 		quitText->SetText("Quit (Esc)");
+		titleSprite->SetScale(0.0f);
 		if (inputManager->IsKeyReleased("Quit")) {
-			state = State::EXIT;
+			isPaused=true;
 			return;
 		}
 		
@@ -256,6 +275,7 @@ void Main::Render()
 	quitSprite->Draw();
 	quitHoverSprite->Draw();
 	spaceCopSprite->Draw();
+	titleSprite->Draw();
 	for (int i = 0; i < 15; i++) {
 		meteorSprite[i]->Draw();
 		planetSprite[i]->Draw();
