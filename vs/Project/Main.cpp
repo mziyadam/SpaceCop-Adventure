@@ -185,7 +185,7 @@ void Main::Update()
 		if (timeCounter >= (10000+spawnLength)) {
 			spawnLength += 5000;
 			timeCounter = 0;
-			if(objectCounter<=50)
+			if(objectCounter<=15)
 				objectCounter += 1;
 		}
 		timeCounter += GetGameTime();
